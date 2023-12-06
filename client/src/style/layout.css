@@ -1,0 +1,51 @@
+nav {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+nav a, nav button {
+    color: white;
+    text-decoration: none;
+    margin: 5px 10px;
+    padding: 5px 10px;
+    background: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+nav a:hover, nav button:hover {
+    border-color: white;
+}
+
+main {
+    padding: 20px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    nav {
+        justify-content: space-around;
+    }
+
+    nav a, nav button {
+        flex: 1 1 auto; 
+        text-align: center;
+        border-radius: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    nav {
+        flex-direction: column;
+    }
+
+    nav a, nav button {
+        width: 100%; 
+        margin: 5px 0; 
+    }
+}

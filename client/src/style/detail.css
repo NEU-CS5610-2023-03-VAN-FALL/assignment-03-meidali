@@ -1,0 +1,62 @@
+.detail-container {
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: auto;
+    max-width: 600px; 
+}
+
+.detail-header, .detail-info, h3 {
+    text-align: left;
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+.detail-header {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.detail-info {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.detail-info strong {
+    font-weight: bold;
+}
+
+.ordered-items {
+    list-style-type: none;
+    padding: 0;
+    margin-left: 20px;
+}
+
+.ordered-items li {
+    margin-bottom: 5px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .detail-container {
+        margin: 10px;
+        padding: 10px;
+        max-width: 100%; 
+    }
+
+    .detail-header, .detail-info, h3 {
+        margin-left: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Styles for phones */
+    .detail-header, .detail-info, h3 {
+        margin-left: 5px; 
+    }
+
+    .ordered-items li {
+        font-size: 0.9em; 
+    }
+}

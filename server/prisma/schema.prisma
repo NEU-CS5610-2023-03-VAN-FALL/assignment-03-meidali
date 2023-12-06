@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model MenuItem {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  spicy       Int
+  veggie      Boolean
+  createdTime  DateTime   @default(now())
+  orderItems OrderItem[]
+  likes      Like[]
+}
+
+model User {
+  id       Int            @id @default(autoincrement())
+  email    String         @unique
+  auth0Id  String         @unique @default("")
+  name     String
+  orders   OrderHistory[]
+  likes      Like[]
+}
+
+model OrderHistory {
+  id           Int        @id @default(autoincrement())
+  createdTime  DateTime   @default(now())
+  user         User       @relation(fields: [userId], references: [id])
+  userId       Int
+  orderItems  OrderItem[]
+}
+
+model OrderItem {
+  order   OrderHistory @relation(fields: [orderId], references: [id])
+  orderId Int
+  menuItem MenuItem    @relation(fields: [menuItemId], references: [id])
+  menuItemId Int
+
+  @@id([orderId, menuItemId])
+}
+
+model Like {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  menuItemId Int
+  @@unique([userId, menuItemId])
+}
