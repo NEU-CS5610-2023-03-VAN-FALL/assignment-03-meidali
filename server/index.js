@@ -7,9 +7,9 @@ import cors from "cors";
 import { auth } from 'express-oauth2-jwt-bearer'
 
 const requireAuth = auth({
-  audience: process.env.AUTH0_AUDIENCE,
-  issuerBaseURL: process.env.AUTH0_ISSUER,
-  tokenSigningAlg: 'RS256'
+    audience: process.env.AUTH0_AUDIENCE,
+    issuerBaseURL: process.env.AUTH0_ISSUER,
+    tokenSigningAlg: 'RS256'
 });
 
 const app = express();
@@ -24,15 +24,15 @@ app.use(express.json());
 
 app.get("/ping", (req, res) => {
     res.send("pong");
-  });
-  
+});
+
 app.get('/api/menu-items', async (req, res) => {
-  try {
-    const menuItems = await prisma.menuItem.findMany();
-    res.json(menuItems);
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
-  }
+    try {
+        const menuItems = await prisma.menuItem.findMany();
+        res.json(menuItems);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 app.get('/menu-items', async (req, res) => {
@@ -50,14 +50,14 @@ app.get('/menu-items', async (req, res) => {
 
 app.get('/api/order-history', requireAuth, async (req, res) => {
     try {
-        const auth0Id = req.auth.payload.sub; 
+        const auth0Id = req.auth.payload.sub;
         const user = await prisma.user.findUnique({
             where: {
-              auth0Id,
+                auth0Id,
             },
-          });
+        });
         const orders = await prisma.orderHistory.findMany({
-            where: { userId: user.id},
+            where: { userId: user.id },
             select: {
                 id: true,
                 createdTime: true
@@ -72,73 +72,73 @@ app.get('/api/order-history', requireAuth, async (req, res) => {
 });
 
 app.get('/api/order-detail/:orderId', async (req, res) => {
-  try {
-      const orderId = parseInt(req.params.orderId);
-      const orderDetails = await prisma.orderHistory.findUnique({
-          where: {
-              id: orderId
-          },
-          include: {
-              orderItems: {
-                  include: {
-                      menuItem: true
-                  }
-              }
-          }
-      });
-      res.json(orderDetails);
-  } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal server error' });
-  }
+    try {
+        const orderId = parseInt(req.params.orderId);
+        const orderDetails = await prisma.orderHistory.findUnique({
+            where: {
+                id: orderId
+            },
+            include: {
+                orderItems: {
+                    include: {
+                        menuItem: true
+                    }
+                }
+            }
+        });
+        res.json(orderDetails);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 app.get('/api/order-history/:orderId', requireAuth, async (req, res) => {
-  try {
-      const { orderId } = req.params;
+    try {
+        const { orderId } = req.params;
 
-      const order = await prisma.orderHistory.findUnique({
-          where: { id: parseInt(orderId, 10) },
-          include: {
-              orderItems: {
-                  include: {
-                      menuItem: true
-                  }
-              }
-          }
-      });
+        const order = await prisma.orderHistory.findUnique({
+            where: { id: parseInt(orderId, 10) },
+            include: {
+                orderItems: {
+                    include: {
+                        menuItem: true
+                    }
+                }
+            }
+        });
 
-      if (order) {
-          res.json(order);
-      } else {
-          res.status(404).send('Order not found');
-      }
-  } catch (error) {
-      console.error('Error fetching order details:', error);
-      res.status(500).send('Internal server error');
-  }
+        if (order) {
+            res.json(order);
+        } else {
+            res.status(404).send('Order not found');
+        }
+    } catch (error) {
+        console.error('Error fetching order details:', error);
+        res.status(500).send('Internal server error');
+    }
 });
 
 app.put('/api/order-history/:orderId', requireAuth, async (req, res) => {
-  try {
-      const { orderId } = req.params;
-      const updatedData = req.body; 
+    try {
+        const { orderId } = req.params;
+        const updatedData = req.body;
 
-      const updatedOrder = await prisma.orderHistory.update({
-          where: { id: parseInt(orderId, 10) },
-          data: updatedData
-      });
+        const updatedOrder = await prisma.orderHistory.update({
+            where: { id: parseInt(orderId, 10) },
+            data: updatedData
+        });
 
-      res.json(updatedOrder);
-  } catch (error) {
-      console.error('Error updating order:', error);
-      res.status(500).send('Internal server error');
-  }
+        res.json(updatedOrder);
+    } catch (error) {
+        console.error('Error updating order:', error);
+        res.status(500).send('Internal server error');
+    }
 });
 
 app.get('/api/profile', requireAuth, async (req, res) => {
     try {
-        const auth0Id = req.auth.payload.sub; 
+        const auth0Id = req.auth.payload.sub;
 
         const user = await prisma.user.findUnique({
             where: { auth0Id: auth0Id },
@@ -164,7 +164,7 @@ app.get('/api/profile', requireAuth, async (req, res) => {
 
 app.put('/api/profile', requireAuth, async (req, res) => {
     try {
-        const userId = req.auth.payload.sub; 
+        const userId = req.auth.payload.sub;
         const { name } = req.body;
 
         const updatedUser = await prisma.user.update({
@@ -182,7 +182,7 @@ app.put('/api/profile', requireAuth, async (req, res) => {
 app.post('/api/order', requireAuth, async (req, res) => {
     try {
         const { menuItemId } = req.body;
-        const userId = req.auth.payload.sub; 
+        const userId = req.auth.payload.sub;
 
         const newOrder = await prisma.orderHistory.create({
             data: {
@@ -232,32 +232,31 @@ app.post("/verify-user", requireAuth, async (req, res) => {
     const auth0Id = req.auth.payload.sub;
     const email = req.auth.payload[`${process.env.AUTH0_AUDIENCE}/email`];
     const name = req.auth.payload[`${process.env.AUTH0_AUDIENCE}/name`];
-  
-    const user = await prisma.user.findUnique({
-      where: {
-        auth0Id,
-      },
-    });
-  
-    if (user) {
-      res.json(user);
-    } else {
-      const newUser = await prisma.user.create({
-        data: {
-          email,
-          auth0Id,
-          name,
-        },
-      });
-  
-      res.json(newUser);
-    }
-  });
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                auth0Id,
+            },
+        });
+        if (!user) {
+            user = await prisma.user.upsert({
+                where: { email },
+                update: { name, auth0Id },
+                create: { email, name, auth0Id },
+            });
+        }
 
-  app.post('/api/like', requireAuth, async (req, res) => {
+        res.json(user);
+    } catch (error) {
+        console.error('Error in /verify-user:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+app.post('/api/like', requireAuth, async (req, res) => {
     try {
         const { menuItemId } = req.body;
-        const auth0UserId = req.auth.payload.sub; 
+        const auth0UserId = req.auth.payload.sub;
 
         // Lookup internal user ID
         const user = await prisma.user.findUnique({
@@ -269,7 +268,7 @@ app.post("/verify-user", requireAuth, async (req, res) => {
 
         const like = await prisma.like.create({
             data: {
-                userId: user.id, 
+                userId: user.id,
                 menuItemId: menuItemId
             }
         });
@@ -283,34 +282,34 @@ app.post("/verify-user", requireAuth, async (req, res) => {
 
 
 app.delete('/api/like/:menuItemId', requireAuth, async (req, res) => {
-  try {
-      const { menuItemId } = req.params;
-      const auth0UserId = req.auth.payload.sub; 
+    try {
+        const { menuItemId } = req.params;
+        const auth0UserId = req.auth.payload.sub;
 
-      const user = await prisma.user.findUnique({
-        where: { auth0Id: auth0UserId }
-    });
-    if (!user) {
-        return res.status(404).send('User not found');
+        const user = await prisma.user.findUnique({
+            where: { auth0Id: auth0UserId }
+        });
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        await prisma.like.deleteMany({
+            where: {
+                userId: user.id,
+                menuItemId: parseInt(menuItemId, 10)
+            }
+        });
+
+        res.status(200).send('Successfully unliked');
+    } catch (error) {
+        console.error('Error unliking menu item:', error);
+        res.status(500).send('Internal server error');
     }
-
-      await prisma.like.deleteMany({
-          where: {
-              userId: user.id,
-              menuItemId: parseInt(menuItemId, 10)
-          }
-      });
-
-      res.status(200).send('Successfully unliked');
-  } catch (error) {
-      console.error('Error unliking menu item:', error);
-      res.status(500).send('Internal server error');
-  }
 });
 
 app.get('/api/likes', requireAuth, async (req, res) => {
     try {
-        const auth0UserId = req.auth.payload.sub; 
+        const auth0UserId = req.auth.payload.sub;
         const user = await prisma.user.findUnique({
             where: { auth0Id: auth0UserId }
         });
@@ -332,8 +331,6 @@ app.get('/api/likes', requireAuth, async (req, res) => {
     }
 });
 
-
-
 app.listen(8000, () => {
-  console.log("Server running on http://localhost:8000 🎉 🚀");
+    console.log("Server running on http://localhost:8000 🎉 🚀");
 });
