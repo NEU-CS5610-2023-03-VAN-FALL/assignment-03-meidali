@@ -1,0 +1,44 @@
+
+.auth-debugger{
+    max-width: 800px; 
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.user-info-list {
+    list-style-type: none; 
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.user-info-list li {
+    margin-bottom: 10px; 
+}
+
+.access-token-textarea {
+    width: 90%;
+    height: 100px;
+    margin-bottom: 20px; 
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none; 
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+    .auth-debugger {
+        padding: 10px;
+    }
+    .access-token-textarea {
+        height: 150px; 
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-debugger {
+        margin: 10px;
+    }
+}
